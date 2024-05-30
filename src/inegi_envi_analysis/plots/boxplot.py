@@ -66,8 +66,9 @@ def BoxPlot(
             title_font=dict(size=letter_size),
         )
 
+        title = str(variable_1.name).replace('_', ' ').title()
         fig.update_layout(
-            title=f'{str(variable_1.name).replace('_', ' ').title()} Box Plots',
+            title=f'{title} Box Plots',
         )
 
         fig.update_layout(

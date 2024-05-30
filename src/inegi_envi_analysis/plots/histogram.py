@@ -102,8 +102,9 @@ def HistogramPlot(
             title_font=dict(size=letter_size),
         )
 
+        title = str(data.name).replace('_', ' ').title()
         fig.update_layout(
-            title=f'{str(data.name).replace('_', ' ').title()} Histogram',
+            title=f'{title} Histogram',
             shapes=[
                 dict(
                     type='line',

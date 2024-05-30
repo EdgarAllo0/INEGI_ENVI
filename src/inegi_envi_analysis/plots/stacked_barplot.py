@@ -61,8 +61,9 @@ def StackedBarPlot(
             title_font=dict(size=letter_size),
         )
 
+        title = column2.replace('_', ' ').title()
         fig.update_layout(
-            title=f'{column2.replace('_', ' ').title()} Stacked Bar Plots',
+            title=f'{title} Stacked Bar Plots',
         )
 
         fig.update_layout(
