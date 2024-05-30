@@ -3,9 +3,9 @@ import os
 import pandas as pd
 
 # Modules
-from inegi_envi_analysis import download_envi_data
-from inegi_envi_analysis import unzip_envi_data
-from inegi_envi_analysis import create_data_set
+from src.inegi_envi_analysis import download_envi_data
+from src.inegi_envi_analysis import unzip_envi_data
+from src.inegi_envi_analysis import create_data_set
 
 # Get Data
 if os.path.exists('Inputs/envi_raw_data/envi_data.zip') and os.path.isdir('Inputs/envi_raw_data/envi_data.zip'):

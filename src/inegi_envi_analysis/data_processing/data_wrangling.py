@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 # Modules
-from inegi_envi_analysis.data_processing.data_processing import create_dataframe
+from src.inegi_envi_analysis.data_processing.data_processing import create_dataframe
 
 
 def create_data_set() -> pd.DataFrame:
@@ -12,6 +12,9 @@ def create_data_set() -> pd.DataFrame:
 
     # Excluding those with no INFONAVIT credits
     data = data.loc[data['P5_15_01'] == 1]
+    # data = data.loc[data['P5_15_02'] == 1]
+    # data = data.loc[data['P5_15_03'] == 1]
+    # data = data.loc[data['P5_15_04'] == 1]
 
     # Then we are also going to exclude those that acquired a house between 2000 and 2019
     data = data.rename(columns={'P5_13_1': 'year_of_acquisition'})    # T means the year when the house was acquired
@@ -275,5 +278,7 @@ def create_data_set() -> pd.DataFrame:
     data = data.dropna(subset=['zone'])
 
     data = data[[col for col in data.columns if not col.startswith('P')]]
+
+    data = data[[col for col in data.columns if not col.isupper()]]
 
     return data
