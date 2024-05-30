@@ -28,8 +28,3 @@ else:
     data = create_data_set()
     data.to_excel('Inputs/dataset.xlsx')
     print("Data Set successfully created")
-
-
-from src.inegi_envi_analysis import get_spatial_data
-
-json = get_spatial_data()

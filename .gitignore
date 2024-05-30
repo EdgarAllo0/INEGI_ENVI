@@ -5,6 +5,7 @@ __pycache__/
 Inputs/*
 
 !Inputs/.gitkeep
+!Inputs/dataset.xlsx
 
 # C extensions
 *.so
