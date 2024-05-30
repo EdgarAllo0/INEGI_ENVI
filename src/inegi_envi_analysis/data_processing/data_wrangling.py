@@ -277,6 +277,8 @@ def create_data_set() -> pd.DataFrame:
     data['zone'] = data['ENT'].astype(int).map(zone_mapping)
     data = data.dropna(subset=['zone'])
 
+    data = data.rename(columns={'ENT': 'federal_entity'})
+
     data = data[[col for col in data.columns if not col.startswith('P')]]
 
     data = data[[col for col in data.columns if not col.isupper()]]

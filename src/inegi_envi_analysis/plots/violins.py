@@ -13,72 +13,57 @@ from src.inegi_envi_analysis.plots.standard_plots import EmptyPlot
 
 
 @st.cache_resource
-def StackedHistogramPlot(
-        variable_1: pd.Series,
-        variable_2: pd.Series,
+def ViolinPlot(
+        df: pd.DataFrame | None,
+        column1: str,
+        column2: str,
 ):
     palette = list(sns.color_palette("Spectral", 50).as_hex())
 
     # Customize letter size
     letter_size = 15
 
+    # Category dict
+    cat_dict = {
+        0: 'Negative Late Payment Category',
+        1: 'Positive Late Payment Category'
+    }
+
     # Conditions for plotting
     condition_1 = (
-            variable_1 is None or
-            variable_1.empty or
-            variable_1.isnull().all()
-    )
-
-    condition_2 = (
-            variable_2 is None or
-            variable_2.empty or
-            variable_2.isnull().all()
+            df is None or
+            df.empty
     )
 
     # If all data is available
-    if not condition_1 and not condition_2:
+    if not condition_1:
 
         fig = make_subplots()
 
-        fig.add_trace(
-            go.Histogram(
-                x=variable_1,
-                histnorm='probability',
-                name='PDF (Negative Late Payment Category)',
-                marker=dict(
-                    color=random.choice(palette)  # Replace with your desired color
+        for i in [0, 1]:
+            fig.add_trace(
+                go.Violin(
+                    x=df[column1][df[column1] == i],
+                    y=df[column2][df[column1] == i],
+                    name=cat_dict[i],
+                    box_visible=False,
+                    meanline_visible=True,
+                    line_color=random.choice(palette)
                 )
             )
-        )
-
-        fig.add_trace(
-            go.Histogram(
-                x=variable_2,
-                histnorm='probability',
-                name='PDF (Positive Late Payment Category)',
-                opacity=0.2,
-                marker=dict(
-                    color=random.choice(palette)  # Replace with your desired color
-                )
-            )
-        )
-
-        fig.update_layout(
-            barmode='overlay',
-        )
 
         fig.update_xaxes(
-            title_text='Values',
+            title_text='Late Payment Class',
             title_font=dict(size=letter_size),
         )
 
         fig.update_yaxes(
-            title_text="Frequency",
+            title_text="Values",
             title_font=dict(size=letter_size),
         )
 
         fig.update_layout(
-            title=f'{variable_1.name.replace('_', ' ').title()} Stacked Histogram',
+            title=f'{column2.replace('_', ' ').title()} Violin Plots',
         )
 
         fig.update_layout(

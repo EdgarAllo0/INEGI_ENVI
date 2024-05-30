@@ -13,47 +13,42 @@ from src.inegi_envi_analysis.plots.standard_plots import EmptyPlot
 
 
 @st.cache_resource
-def BoxPlot(
-        variable_1: pd.Series,
-        variable_2: pd.Series,
+def StackedBarPlot(
+        df: pd.DataFrame | None,
+        column1: str,
+        column2: str,
 ):
-    palette = list(sns.color_palette("Spectral", 50).as_hex())
+    counts = df.groupby([column1, column2]).size().unstack(fill_value=0)
+
+    palette = list(sns.color_palette("Spectral", len(counts)*2).as_hex())
 
     # Customize letter size
     letter_size = 15
 
     # Conditions for plotting
     condition_1 = (
-            variable_1 is None or
-            variable_1.empty or
-            variable_1.isnull().all()
-    )
-
-    condition_2 = (
-            variable_2 is None or
-            variable_2.empty or
-            variable_2.isnull().all()
+            df is None or
+            df.empty
     )
 
     # If all data is available
-    if not condition_1 and not condition_2:
+    if not condition_1:
 
         fig = make_subplots()
 
-        fig.add_trace(
-            go.Box(
-                y=variable_1,
-                name='Negative Late Payment Category',
-                marker_color=random.choice(palette)
-            )
-        )
+        for i, category in enumerate(counts.columns):
+            fig.add_trace(
+                go.Bar(
+                    x=counts.index,
+                    y=counts[category],
+                    name=category,
+                    marker=dict(color=palette[i % len(palette)])
 
-        fig.add_trace(
-            go.Box(
-                y=variable_2,
-                name='Positive Late Payment Category',
-                marker_color=random.choice(palette)
+                )
             )
+
+        fig.update_layout(
+            barmode='stack',
         )
 
         fig.update_xaxes(
@@ -67,7 +62,7 @@ def BoxPlot(
         )
 
         fig.update_layout(
-            title=f'{variable_1.name.replace('_', ' ').title()} Box Plots',
+            title=f'{column2.replace('_', ' ').title()} Stacked Bar Plots',
         )
 
         fig.update_layout(

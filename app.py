@@ -6,9 +6,11 @@ from streamlit_option_menu import option_menu
 import pandas as pd
 
 # Modules
-from src.inegi_envi_analysis import HistogramPlot
-from src.inegi_envi_analysis import StackedHistogramPlot
-from src.inegi_envi_analysis import BoxPlot
+from src.inegi_envi_analysis import read_dataset_excel
+
+# Layouts
+from src.inegi_envi_analysis import DataExplorationLayout
+
 
 # Set the website layouts
 st.set_page_config(
@@ -16,6 +18,7 @@ st.set_page_config(
     layout="wide",
 )
 
+# Set the sidebar content
 with st.sidebar:
     st.header('INEGI-ENVI (2020) Analysis')
 
@@ -25,6 +28,16 @@ with st.sidebar:
         icons=['house', 'balloon', "cash"],
         menu_icon="cast",
         default_index=0
+    )
+
+    with open("assets/dictionary.xlsx", "rb") as file:
+        excel_data = file.read()
+
+    st.download_button(
+        label="Download Data Dictionary",
+        data=excel_data,
+        file_name='dictionary.xlsx',
+        mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
 
     st.subheader('A Work by Not a Recommendation')
@@ -41,96 +54,16 @@ with st.sidebar:
         "https://github.com/EdgarAllo0"
     )
 
+# Download data (you must run main.py before the Dashboard)
+df = read_dataset_excel()
+
+# Dashboard
+
 if selected == 'Data Exploration':
 
     st.title("ENVI Data Exploration")
 
-    df = pd.read_excel('Inputs/dataset.xlsx', index_col='index')
-
-    st.subheader('Filtered Data')
-
-    st.dataframe(df, height=300)
-
-    st.subheader('Histograms')
-
-    histogram_vars = st.selectbox(
-        'Choose a Feature',
-        (list(df.select_dtypes(include=['number']).columns)),
-    )
-
-    fig = HistogramPlot(df[histogram_vars])
-
-    st.plotly_chart(
-        fig,
-        use_container_width=True
-    )
-
-    st.subheader('Stacked Histograms')
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-
-        late_payment_conditions_1 = st.selectbox(
-            'Choose a Late Payment Condition',
-            (['late_payment_1', 'late_payment_2', 'late_payment_3']),
-            key='payment1'
-        )
-
-    with col2:
-
-        stacked_histogram_vars = st.selectbox(
-            'Choose a Feature',
-            (list(df.drop(
-                columns=['late_payment_1', 'late_payment_2', 'late_payment_3']
-            ).select_dtypes(include=['number']).columns)),
-        )
-
-    fig1 = StackedHistogramPlot(
-        df[df[late_payment_conditions_1] == 0][stacked_histogram_vars],
-        df[df[late_payment_conditions_1] == 1][stacked_histogram_vars],
-    )
-
-    st.plotly_chart(
-        fig1,
-        use_container_width=True
-    )
-
-    st.subheader('Box Plots')
-
-    col3, col4 = st.columns(2)
-
-    with col3:
-
-        late_payment_conditions_2 = st.selectbox(
-            'Choose a Late Payment Condition',
-            (['late_payment_1', 'late_payment_2', 'late_payment_3']),
-            key='payment2'
-        )
-
-    with col4:
-
-        unique_counts = df.nunique()
-
-        columns_with_more_than_10_unique_values = unique_counts[unique_counts > 10].index
-
-        result_df = df[columns_with_more_than_10_unique_values]
-
-        boxplot_vars = st.selectbox(
-            'Choose a Feature',
-            (list(result_df.select_dtypes(include=['number']).columns)),
-        )
-
-    fig2 = BoxPlot(
-        df[df[late_payment_conditions_2] == 0][boxplot_vars],
-        df[df[late_payment_conditions_2] == 1][boxplot_vars],
-    )
-
-    st.plotly_chart(
-        fig2,
-        use_container_width=True
-    )
-
+    DataExplorationLayout(df)
 
 elif selected == 'Hypothesis Testing':
 

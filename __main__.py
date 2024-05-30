@@ -21,7 +21,15 @@ else:
     unzip_envi_data()
     print("Data Unzipped Successfully")
 
-data = create_data_set()
+# Create DataSet
+if os.path.exists('Inputs/dataset.xlsx') and os.path.isdir('Inputs/dataset.xlsx'):
+    print("Data Set already exists")
+else:
+    data = create_data_set()
+    data.to_excel('Inputs/dataset.xlsx')
+    print("Data Set successfully created")
 
-data.to_excel('Inputs/dataset.xlsx')
 
+from src.inegi_envi_analysis import get_spatial_data
+
+json = get_spatial_data()
