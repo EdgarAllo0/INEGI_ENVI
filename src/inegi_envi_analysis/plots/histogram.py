@@ -103,7 +103,7 @@ def HistogramPlot(
         )
 
         fig.update_layout(
-            title=f'{data.name.replace('_', ' ').title()} Histogram',
+            title=f'{str(data.name).replace('_', ' ').title()} Histogram',
             shapes=[
                 dict(
                     type='line',

@@ -78,7 +78,7 @@ def StackedHistogramPlot(
         )
 
         fig.update_layout(
-            title=f'{variable_1.name.replace('_', ' ').title()} Stacked Histogram',
+            title=f'{str(variable_1.name).replace('_', ' ').title()} Stacked Histogram',
         )
 
         fig.update_layout(

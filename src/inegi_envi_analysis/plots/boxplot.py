@@ -67,7 +67,7 @@ def BoxPlot(
         )
 
         fig.update_layout(
-            title=f'{variable_1.name.replace('_', ' ').title()} Box Plots',
+            title=f'{str(variable_1.name).replace('_', ' ').title()} Box Plots',
         )
 
         fig.update_layout(
