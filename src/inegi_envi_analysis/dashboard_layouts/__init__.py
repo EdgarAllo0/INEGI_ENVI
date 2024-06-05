@@ -1,1 +1,2 @@
 from src.inegi_envi_analysis.dashboard_layouts.data_visualization_layout import DataExplorationLayout
+from src.inegi_envi_analysis.dashboard_layouts.hypothesis_testing_layout import HypothesisTestingLayout

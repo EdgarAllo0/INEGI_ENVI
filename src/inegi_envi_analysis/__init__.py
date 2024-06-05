@@ -17,3 +17,4 @@ from src.inegi_envi_analysis.plots import StackedBarPlot
 
 # Dashboard Layouts
 from src.inegi_envi_analysis.dashboard_layouts import DataExplorationLayout
+from src.inegi_envi_analysis.dashboard_layouts import HypothesisTestingLayout

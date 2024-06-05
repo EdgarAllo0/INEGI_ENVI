@@ -62,7 +62,7 @@ def ViolinPlot(
             title_font=dict(size=letter_size),
         )
 
-        title = {column2.replace('_', ' ').title()}
+        title = column2.replace('_', ' ').title()
         fig.update_layout(
             title=f'{title} Violin Plots',
         )

@@ -10,7 +10,7 @@ from src.inegi_envi_analysis import read_dataset_excel
 
 # Layouts
 from src.inegi_envi_analysis import DataExplorationLayout
-
+from src.inegi_envi_analysis import HypothesisTestingLayout
 
 # Set the website layouts
 st.set_page_config(
@@ -69,7 +69,7 @@ elif selected == 'Hypothesis Testing':
 
     st.title('Statistical Hypothesis Testing')
 
-    st.warning('We are working on it...', icon="⚠️")
+    HypothesisTestingLayout(df)
 
 elif selected == 'Models':
 

@@ -10,11 +10,23 @@ def create_data_set() -> pd.DataFrame:
     # Create DataFrames
     data = create_dataframe()
 
-    # Excluding those with no INFONAVIT credits
-    data = data.loc[data['P5_15_01'] == 1]
-    # data = data.loc[data['P5_15_02'] == 1]
-    # data = data.loc[data['P5_15_03'] == 1]
-    # data = data.loc[data['P5_15_04'] == 1]
+    # Excluding those with no mortgages
+    data = data.loc[
+        (data['P5_15_01'] == 1) |
+        (data['P5_15_02'] == 1) |
+        (data['P5_15_03'] == 1) |
+        (data['P5_15_04'] == 1)
+        ]
+
+    # Excluding if they have more than one mortgage
+    conditions = (
+            (data['P5_15_01'] == 1).astype(int) +
+            (data['P5_15_02'] == 1).astype(int) +
+            (data['P5_15_03'] == 1).astype(int) +
+            (data['P5_15_04'] == 1).astype(int)
+    )
+
+    data = data.loc[conditions == 1]
 
     # Then we are also going to exclude those that acquired a house between 2000 and 2019
     data = data.rename(columns={'P5_13_1': 'year_of_acquisition'})    # T means the year when the house was acquired
@@ -30,36 +42,80 @@ def create_data_set() -> pd.DataFrame:
     # FIRST LATE PAYMENT CONDITION #
 
     # Now set the credit duration
-    data = data.rename(columns={'P5_17_01': 'credit_duration'})
-    data['credit_duration'] = data['credit_duration'].apply(lambda x: np.nan if x >= 98 else x)
+    data['P5_17_01'] = data['P5_17_01'].apply(lambda x: np.nan if x >= 98 else x)
+    data['P5_17_01'] = data['P5_17_01'].apply(lambda x: np.nan if x == 0 else x)
+
+    data['P5_17_02'] = data['P5_17_02'].apply(lambda x: np.nan if x >= 98 else x)
+    data['P5_17_02'] = data['P5_17_02'].apply(lambda x: np.nan if x == 0 else x)
+
+    data['P5_17_03'] = data['P5_17_03'].apply(lambda x: np.nan if x >= 98 else x)
+    data['P5_17_03'] = data['P5_17_03'].apply(lambda x: np.nan if x == 0 else x)
+
+    data['P5_17_04'] = data['P5_17_04'].apply(lambda x: np.nan if x >= 98 else x)
+    data['P5_17_04'] = data['P5_17_04'].apply(lambda x: np.nan if x == 0 else x)
+
+    data['credit_duration'] = data[['P5_17_01', 'P5_17_02', 'P5_17_03', 'P5_17_04']].fillna(0).sum(axis=1)
     data['credit_duration'] = data['credit_duration'].apply(lambda x: np.nan if x == 0 else x)
+
     data = data.dropna(subset=['credit_duration'])
 
     # Create the expected time left to finish the credit
     data['expected_time_to_finish'] = data['credit_duration'] - data['time_elapsed']
+
+    data['expected_time_to_finish'] = data['expected_time_to_finish'].apply(lambda x: np.nan if x <= 0 else x)
+
     data = data.dropna(subset=['expected_time_to_finish'])
 
     # Create the reported time left to finish the credit
-    data = data.rename(columns={'P5_21_1_1': 'reported_time_to_finish'})
-    data['reported_time_to_finish'] = data['reported_time_to_finish'].apply(lambda x: np.nan if x >= 98 else x)
+    data['P5_21_1_1'] = data['P5_21_1_1'].apply(lambda x: np.nan if x >= 98 else x)
+
+    data['P5_21_2_1'] = data['P5_21_2_1'].apply(lambda x: np.nan if x >= 98 else x)
+
+    data['P5_21_3_1'] = data['P5_21_3_1'].apply(lambda x: np.nan if x >= 98 else x)
+
+    data['P5_21_4_1'] = data['P5_21_4_1'].apply(lambda x: np.nan if x >= 98 else x)
+
+    data['reported_time_to_finish'] = data[['P5_21_1_1', 'P5_21_2_1', 'P5_21_3_1', 'P5_21_4_1']].fillna(0).sum(axis=1)
+    data['reported_time_to_finish'] = data['reported_time_to_finish'].apply(lambda x: np.nan if x == 0 else x)
+
     data = data.dropna(subset=['reported_time_to_finish'])
 
     # Now create the first late payment condition
     data['late_payment_1'] = 0
+
     data.loc[(data['expected_time_to_finish'] < data['reported_time_to_finish']), "late_payment_1"] = 1
+
     data = data.dropna(subset=['late_payment_1'])
 
     # SECOND LATE PAYMENT CONDITION #
 
     # Paid amount
-    data = data.rename(columns={'P5_19_1': 'paid_amount'})
-    data['paid_amount'] = data['paid_amount'].apply(lambda x: np.nan if x >= 9999886 else x)
+    data['P5_19_1'] = data['P5_19_1'].apply(lambda x: np.nan if x >= 9999886 else x)
+
+    data['P5_19_2'] = data['P5_19_2'].apply(lambda x: np.nan if x >= 9999886 else x)
+
+    data['P5_19_3'] = data['P5_19_3'].apply(lambda x: np.nan if x >= 9999886 else x)
+
+    data['P5_19_4'] = data['P5_19_4'].apply(lambda x: np.nan if x >= 9999886 else x)
+
+    data['paid_amount'] = data[['P5_19_1', 'P5_19_2', 'P5_19_3', 'P5_19_4']].fillna(0).sum(axis=1)
+    data['paid_amount'] = data['paid_amount'].apply(lambda x: np.nan if x == 0 else x)
+
     data = data.dropna(subset=['paid_amount'])
 
     # Credit amount
-    data = data.rename(columns={'P5_16_01': 'credit_amount'})
-    data['credit_amount'] = data['credit_amount'].apply(lambda x: np.nan if x >= 999999886 else x)
+    data['P5_16_01'] = data['P5_16_01'].apply(lambda x: np.nan if x >= 999999886 else x)
+
+    data['P5_16_02'] = data['P5_16_02'].apply(lambda x: np.nan if x >= 999999886 else x)
+
+    data['P5_16_03'] = data['P5_16_03'].apply(lambda x: np.nan if x >= 999999886 else x)
+
+    data['P5_16_04'] = data['P5_16_04'].apply(lambda x: np.nan if x >= 999999886 else x)
+
+    data['credit_amount'] = data[['P5_16_01', 'P5_16_02', 'P5_16_03', 'P5_16_04']].fillna(0).sum(axis=1)
+
     data['credit_amount'] = data['credit_amount'].apply(lambda x: np.nan if x == 0 else x)
+
     data = data.dropna(subset=['credit_amount'])
 
     # Paid fraction
