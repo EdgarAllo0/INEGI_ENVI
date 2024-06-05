@@ -240,13 +240,13 @@ def HypothesisTestingLayout(
 
     with mid_col:
         st.markdown("**Year of Acquisition Sample**")
-        st.markdown(f"Age Mean: {df[df['year_of_acquisition'] == years]['late_payment_3'].mean().round(2)}")
+        st.markdown(f"Mean: {df[df['year_of_acquisition'] == years]['late_payment_3'].mean().round(2)}")
         st.markdown(f"Variance: {df[df['year_of_acquisition'] == years]['late_payment_3'].var(ddof=1).round(2)}")
         st.markdown(f"Sample Size: {len(df[df['year_of_acquisition'] == years]['late_payment_3'])}")
 
     with col_right:
         st.markdown("**Other Years Sample**")
-        st.markdown(f"Age Mean: {df[df['year_of_acquisition'] != years]['late_payment_3'].mean().round(2)}")
+        st.markdown(f"Mean: {df[df['year_of_acquisition'] != years]['late_payment_3'].mean().round(2)}")
         st.markdown(f"Variance: {df[df['year_of_acquisition'] != years]['late_payment_3'].var(ddof=1).round(2)}")
         st.markdown(f"Sample Size: {len(df[df['year_of_acquisition'] != years]['late_payment_3'])}")
 
@@ -259,3 +259,45 @@ def HypothesisTestingLayout(
         fig7,
         use_container_width=True
     )
+
+    st.divider()
+
+    st.subheader('Does delinquency probability depends on the region the house is located?')
+
+    regions = st.selectbox(
+        'Choose a Feature',
+        (sorted(df['zone'].unique())),
+    )
+
+    col_left, buff1, mid_col, buff2, col_right = st.columns([3, 1, 3, 1, 3])
+
+    with col_left:
+        st.markdown("**Hypothesis**")
+
+        st.markdown(f"*H0*: Living in {regions} doesn't change the probability of default")
+
+        st.markdown(f"*H1*: Living in {regions} does change the probability of default")
+
+    with mid_col:
+        st.markdown("**Selected Region Sample**")
+        st.markdown(f"Mean: {df[df['zone'] == regions]['late_payment_3'].mean().round(2)}")
+        st.markdown(f"Variance: {df[df['zone'] == regions]['late_payment_3'].var(ddof=1).round(2)}")
+        st.markdown(f"Sample Size: {len(df[df['zone'] == regions]['late_payment_3'])}")
+
+    with col_right:
+        st.markdown("**Other Regions Sample**")
+        st.markdown(f"Mean: {df[df['zone'] != regions]['late_payment_3'].mean().round(2)}")
+        st.markdown(f"Variance: {df[df['zone'] != regions]['late_payment_3'].var(ddof=1).round(2)}")
+        st.markdown(f"Sample Size: {len(df[df['zone'] != regions]['late_payment_3'])}")
+
+    fig8 = TStudentHistogram(
+        df[df['zone'] == regions]['late_payment_3'],
+        df[df['zone'] != regions]['late_payment_3']
+    )
+
+    st.plotly_chart(
+        fig8,
+        use_container_width=True
+    )
+
+    st.divider()
