@@ -1,10 +1,11 @@
 # Libraries
 import streamlit as st
 import pandas as pd
+import numpy as np
 
 # Plots
-from src.inegi_envi_analysis.plots import TStudentHistogram
-from src.inegi_envi_analysis.plots import NormalDistribution
+from src.inegi_envi_analysis.hypothesis_tests import TStudentTest
+from src.inegi_envi_analysis.hypothesis_tests import MannWhitneyTest
 
 
 def HypothesisTestingLayout(
@@ -36,7 +37,7 @@ def HypothesisTestingLayout(
         st.markdown(f"Variance: {df[df['woman'] == 0]['late_payment_3'].var(ddof=1).round(2)}")
         st.markdown(f"Sample Size: {len(df[df['woman'] == 0]['late_payment_3'])}")
 
-    fig1 = TStudentHistogram(
+    fig1 = TStudentTest(
         df[df['woman'] == 0]['late_payment_3'],
         df[df['woman'] == 1]['late_payment_3']
     )
@@ -71,13 +72,12 @@ def HypothesisTestingLayout(
         st.markdown(f"Variance: {df[df['late_payment_3'] == 0]['monthly_wage'].var(ddof=1).round(2)}")
         st.markdown(f"Sample Size: {len(df[df['late_payment_3'] == 0]['monthly_wage'])}")
 
-
     tab1, tab2 = st.tabs(['t-student', 'Mann-Whitney'])
 
     with tab1:
-        fig2 = TStudentHistogram(
-            df[df['late_payment_3'] == 1]['monthly_wage'],
-            df[df['late_payment_3'] == 0]['monthly_wage']
+        fig2 = TStudentTest(
+            np.log(df[df['late_payment_3'] == 1]['monthly_wage']),
+            np.log(df[df['late_payment_3'] == 0]['monthly_wage'])
         )
 
         st.plotly_chart(
@@ -85,7 +85,7 @@ def HypothesisTestingLayout(
             use_container_width=True
         )
     with tab2:
-        fig2 = NormalDistribution(
+        fig2 = MannWhitneyTest(
             df[df['late_payment_3'] == 1]['monthly_wage'],
             df[df['late_payment_3'] == 0]['monthly_wage']
         )
@@ -123,7 +123,7 @@ def HypothesisTestingLayout(
     tab1, tab2 = st.tabs(['t-student', 'Mann-Whitney'])
 
     with tab1:
-        fig3 = TStudentHistogram(
+        fig3 = TStudentTest(
             df[df['late_payment_3'] == 1]['payment_percentage'].div(100),
             df[df['late_payment_3'] == 0]['payment_percentage'].div(100)
         )
@@ -134,7 +134,7 @@ def HypothesisTestingLayout(
         )
 
     with tab2:
-        fig3 = NormalDistribution(
+        fig3 = MannWhitneyTest(
             df[df['late_payment_3'] == 1]['payment_percentage'].div(100),
             df[df['late_payment_3'] == 0]['payment_percentage'].div(100)
         )
@@ -172,9 +172,9 @@ def HypothesisTestingLayout(
     tab1, tab2 = st.tabs(['t-student', 'Mann-Whitney'])
 
     with tab1:
-        fig4 = TStudentHistogram(
-            df[df['late_payment_3'] == 1]['credit_amount'].div(100),
-            df[df['late_payment_3'] == 0]['credit_amount'].div(100)
+        fig4 = TStudentTest(
+            np.log(df[df['late_payment_3'] == 1]['credit_amount']),
+            np.log(df[df['late_payment_3'] == 0]['credit_amount'])
         )
 
         st.plotly_chart(
@@ -183,9 +183,9 @@ def HypothesisTestingLayout(
         )
 
     with tab2:
-        fig4 = NormalDistribution(
-            df[df['late_payment_3'] == 1]['credit_amount'].div(100),
-            df[df['late_payment_3'] == 0]['credit_amount'].div(100)
+        fig4 = MannWhitneyTest(
+            df[df['late_payment_3'] == 1]['credit_amount'],
+            df[df['late_payment_3'] == 0]['credit_amount']
         )
 
         st.plotly_chart(
@@ -221,9 +221,9 @@ def HypothesisTestingLayout(
     tab1, tab2 = st.tabs(['t-student', 'Mann-Whitney'])
 
     with tab1:
-        fig5 = TStudentHistogram(
-            df[df['late_payment_3'] == 1]['price'].div(100),
-            df[df['late_payment_3'] == 0]['price'].div(100)
+        fig5 = TStudentTest(
+            np.log(df[df['late_payment_3'] == 1]['price']),
+            np.log(df[df['late_payment_3'] == 0]['price'])
         )
 
         st.plotly_chart(
@@ -232,9 +232,9 @@ def HypothesisTestingLayout(
         )
 
     with tab2:
-        fig5 = NormalDistribution(
-            df[df['late_payment_3'] == 1]['price'].div(100),
-            df[df['late_payment_3'] == 0]['price'].div(100)
+        fig5 = MannWhitneyTest(
+            df[df['late_payment_3'] == 1]['price'],
+            df[df['late_payment_3'] == 0]['price']
         )
 
         st.plotly_chart(
@@ -267,15 +267,29 @@ def HypothesisTestingLayout(
         st.markdown(f"Variance: {df[df['late_payment_3'] == 0]['age'].var(ddof=1).round(2)}")
         st.markdown(f"Sample Size: {len(df[df['late_payment_3'] == 0]['age'])}")
 
-    fig6 = TStudentHistogram(
-        df[df['late_payment_3'] == 0]['age'],
-        df[df['late_payment_3'] == 1]['age']
-    )
+    tab1, tab2 = st.tabs(['t-student', 'Mann-Whitney'])
 
-    st.plotly_chart(
-        fig6,
-        use_container_width=True
-    )
+    with tab1:
+        fig6 = TStudentTest(
+            np.log(df[df['late_payment_3'] == 0]['age']),
+            np.log(df[df['late_payment_3'] == 1]['age'])
+        )
+
+        st.plotly_chart(
+            fig6,
+            use_container_width=True
+        )
+
+    with tab2:
+        fig6 = MannWhitneyTest(
+            df[df['late_payment_3'] == 0]['age'],
+            df[df['late_payment_3'] == 1]['age']
+        )
+
+        st.plotly_chart(
+            fig6,
+            use_container_width=True
+        )
 
     st.divider()
 
@@ -307,7 +321,7 @@ def HypothesisTestingLayout(
         st.markdown(f"Variance: {df[df['year_of_acquisition'] != years]['late_payment_3'].var(ddof=1).round(2)}")
         st.markdown(f"Sample Size: {len(df[df['year_of_acquisition'] != years]['late_payment_3'])}")
 
-    fig7 = TStudentHistogram(
+    fig7 = TStudentTest(
         df[df['year_of_acquisition'] == years]['late_payment_3'],
         df[df['year_of_acquisition'] != years]['late_payment_3']
     )
@@ -347,7 +361,7 @@ def HypothesisTestingLayout(
         st.markdown(f"Variance: {df[df['zone'] != regions]['late_payment_3'].var(ddof=1).round(2)}")
         st.markdown(f"Sample Size: {len(df[df['zone'] != regions]['late_payment_3'])}")
 
-    fig8 = TStudentHistogram(
+    fig8 = TStudentTest(
         df[df['zone'] == regions]['late_payment_3'],
         df[df['zone'] != regions]['late_payment_3']
     )

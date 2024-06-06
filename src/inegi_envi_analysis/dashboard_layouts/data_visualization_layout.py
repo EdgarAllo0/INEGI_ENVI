@@ -8,6 +8,7 @@ from src.inegi_envi_analysis.plots import StackedHistogramPlot
 from src.inegi_envi_analysis.plots import BoxPlot
 from src.inegi_envi_analysis.plots import ViolinPlot
 from src.inegi_envi_analysis.plots import StackedBarPlot
+from src.inegi_envi_analysis.hypothesis_tests import JarqueBetaTest
 
 
 def DataExplorationLayout(
@@ -82,6 +83,7 @@ def DataExplorationLayout(
         boxplot_vars = st.selectbox(
             'Choose a Feature',
             (list(result_df.select_dtypes(include=['number']).columns)),
+            key='bxvar'
         )
 
     fig2 = BoxPlot(
@@ -149,6 +151,29 @@ def DataExplorationLayout(
         df,
         late_payment_conditions_4,
         stacked_barplot_vars,
+    )
+
+    st.plotly_chart(
+        fig4,
+        use_container_width=True
+    )
+
+    st.subheader('Normality Tests')
+
+    unique_counts = df.nunique()
+
+    columns_with_more_than_10_unique_values = unique_counts[unique_counts > 10].index
+
+    result_df = df[columns_with_more_than_10_unique_values]
+
+    normal_tests_vars = st.selectbox(
+        'Choose a Feature',
+        (list(result_df.select_dtypes(include=['number']).columns)),
+        key='normvar'
+    )
+
+    fig4 = JarqueBetaTest(
+        df[normal_tests_vars]
     )
 
     st.plotly_chart(
