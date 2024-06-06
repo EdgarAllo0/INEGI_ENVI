@@ -1,0 +1,3 @@
+from src.inegi_envi_analysis.hypothesis_tests.jarque_bera_test import JarqueBetaTest
+from src.inegi_envi_analysis.hypothesis_tests.mann_whitney_test import MannWhitneyTest
+from src.inegi_envi_analysis.hypothesis_tests.t_student_test import TStudentTest
