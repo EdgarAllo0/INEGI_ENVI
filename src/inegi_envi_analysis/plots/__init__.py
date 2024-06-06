@@ -5,3 +5,4 @@ from src.inegi_envi_analysis.plots.boxplot import BoxPlot
 from src.inegi_envi_analysis.plots.violins import ViolinPlot
 from src.inegi_envi_analysis.plots.stacked_barplot import StackedBarPlot
 from src.inegi_envi_analysis.plots.t_student_histogram import TStudentHistogram
+from src.inegi_envi_analysis.plots.z_normal_histogram import NormalDistribution

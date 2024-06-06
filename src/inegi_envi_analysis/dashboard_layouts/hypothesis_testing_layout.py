@@ -4,6 +4,7 @@ import pandas as pd
 
 # Plots
 from src.inegi_envi_analysis.plots import TStudentHistogram
+from src.inegi_envi_analysis.plots import NormalDistribution
 
 
 def HypothesisTestingLayout(
@@ -70,15 +71,29 @@ def HypothesisTestingLayout(
         st.markdown(f"Variance: {df[df['late_payment_3'] == 0]['monthly_wage'].var(ddof=1).round(2)}")
         st.markdown(f"Sample Size: {len(df[df['late_payment_3'] == 0]['monthly_wage'])}")
 
-    fig2 = TStudentHistogram(
-        df[df['late_payment_3'] == 1]['monthly_wage'],
-        df[df['late_payment_3'] == 0]['monthly_wage']
-    )
 
-    st.plotly_chart(
-        fig2,
-        use_container_width=True
-    )
+    tab1, tab2 = st.tabs(['t-student', 'Mann-Whitney'])
+
+    with tab1:
+        fig2 = TStudentHistogram(
+            df[df['late_payment_3'] == 1]['monthly_wage'],
+            df[df['late_payment_3'] == 0]['monthly_wage']
+        )
+
+        st.plotly_chart(
+            fig2,
+            use_container_width=True
+        )
+    with tab2:
+        fig2 = NormalDistribution(
+            df[df['late_payment_3'] == 1]['monthly_wage'],
+            df[df['late_payment_3'] == 0]['monthly_wage']
+        )
+
+        st.plotly_chart(
+            fig2,
+            use_container_width=True
+        )
 
     st.divider()
 
@@ -105,15 +120,29 @@ def HypothesisTestingLayout(
         st.markdown(f"Variance: {df[df['late_payment_3'] == 0]['payment_percentage'].div(100).var(ddof=1).round(2)}")
         st.markdown(f"Sample Size: {len(df[df['late_payment_3'] == 0]['payment_percentage'])}")
 
-    fig3 = TStudentHistogram(
-        df[df['late_payment_3'] == 1]['payment_percentage'].div(100),
-        df[df['late_payment_3'] == 0]['payment_percentage'].div(100)
-    )
+    tab1, tab2 = st.tabs(['t-student', 'Mann-Whitney'])
 
-    st.plotly_chart(
-        fig3,
-        use_container_width=True
-    )
+    with tab1:
+        fig3 = TStudentHistogram(
+            df[df['late_payment_3'] == 1]['payment_percentage'].div(100),
+            df[df['late_payment_3'] == 0]['payment_percentage'].div(100)
+        )
+
+        st.plotly_chart(
+            fig3,
+            use_container_width=True
+        )
+
+    with tab2:
+        fig3 = NormalDistribution(
+            df[df['late_payment_3'] == 1]['payment_percentage'].div(100),
+            df[df['late_payment_3'] == 0]['payment_percentage'].div(100)
+        )
+
+        st.plotly_chart(
+            fig3,
+            use_container_width=True
+        )
 
     st.divider()
 
@@ -140,15 +169,29 @@ def HypothesisTestingLayout(
         st.markdown(f"Variance: {df[df['late_payment_3'] == 0]['credit_amount'].var(ddof=1).round(2)}")
         st.markdown(f"Sample Size: {len(df[df['late_payment_3'] == 0]['credit_amount'])}")
 
-    fig4 = TStudentHistogram(
-        df[df['late_payment_3'] == 1]['credit_amount'].div(100),
-        df[df['late_payment_3'] == 0]['credit_amount'].div(100)
-    )
+    tab1, tab2 = st.tabs(['t-student', 'Mann-Whitney'])
 
-    st.plotly_chart(
-        fig4,
-        use_container_width=True
-    )
+    with tab1:
+        fig4 = TStudentHistogram(
+            df[df['late_payment_3'] == 1]['credit_amount'].div(100),
+            df[df['late_payment_3'] == 0]['credit_amount'].div(100)
+        )
+
+        st.plotly_chart(
+            fig4,
+            use_container_width=True
+        )
+
+    with tab2:
+        fig4 = NormalDistribution(
+            df[df['late_payment_3'] == 1]['credit_amount'].div(100),
+            df[df['late_payment_3'] == 0]['credit_amount'].div(100)
+        )
+
+        st.plotly_chart(
+            fig4,
+            use_container_width=True
+        )
 
     st.divider()
 
@@ -175,15 +218,29 @@ def HypothesisTestingLayout(
         st.markdown(f"Variance: {df[df['late_payment_3'] == 0]['price'].var(ddof=1).round(2)}")
         st.markdown(f"Sample Size: {len(df[df['late_payment_3'] == 0]['price'])}")
 
-    fig5 = TStudentHistogram(
-        df[df['late_payment_3'] == 1]['price'].div(100),
-        df[df['late_payment_3'] == 0]['price'].div(100)
-    )
+    tab1, tab2 = st.tabs(['t-student', 'Mann-Whitney'])
 
-    st.plotly_chart(
-        fig5,
-        use_container_width=True
-    )
+    with tab1:
+        fig5 = TStudentHistogram(
+            df[df['late_payment_3'] == 1]['price'].div(100),
+            df[df['late_payment_3'] == 0]['price'].div(100)
+        )
+
+        st.plotly_chart(
+            fig5,
+            use_container_width=True
+        )
+
+    with tab2:
+        fig5 = NormalDistribution(
+            df[df['late_payment_3'] == 1]['price'].div(100),
+            df[df['late_payment_3'] == 0]['price'].div(100)
+        )
+
+        st.plotly_chart(
+            fig5,
+            use_container_width=True
+        )
 
     st.divider()
 
